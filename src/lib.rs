@@ -1,12 +1,15 @@
 //! Biblioteca abriga funções para cálculos de matemática financeira
+//! Pode ser utilizada para WebAssembly, compilando 
 ///
 /// 
+use wasm_bindgen::prelude::*;
 ///
 /// Transforma taxa anual inserida em taxa mensal
 /// 
 /// # Arguments
 ///  * i_ao_ano - taxa ao ano em formato 10.0 para 10%
 /// 
+#[wasm_bindgen]
 pub fn i_aa_to_am(i_ao_ano: f64) -> f64 {
     let i_ao_mes: f64 = ((1.0 + (i_ao_ano / 100.0)).powf(1.0 / 12.0) - 1.0) * 100.0;
     return i_ao_mes;
@@ -16,6 +19,7 @@ pub fn i_aa_to_am(i_ao_ano: f64) -> f64 {
 /// # Arguments
 ///  * i_ao_mes - taxa ao ano em formato 10.0 para 10%
 ///
+#[wasm_bindgen]
 pub fn i_am_to_aa(i_ao_mes: f64) -> f64 {
     let i_ao_ano: f64 = (((1.0 + (i_ao_mes / 100.0)).powf(12.0)) - 1.0 ) * 100.0;
     return i_ao_ano;
@@ -27,6 +31,7 @@ pub fn i_am_to_aa(i_ao_mes: f64) -> f64 {
 ///  * i - taxa/juros, formato 10.0 para 10% 
 ///  * n - numero de periodos, formato 12.0 para 12 periodos 
 /// 
+#[wasm_bindgen]
 pub fn calcula_valor_futuro(valor_presente: f64, i: f64, n: f64) -> f64 {
     let i = i / 100.0;
     let valor_futuro:f64 = valor_presente * (1.0 + i).powf(n);
@@ -39,6 +44,7 @@ pub fn calcula_valor_futuro(valor_presente: f64, i: f64, n: f64) -> f64 {
 ///  * i - taxa/juros, formato 10.0 para 10% 
 ///  * n - numero de periodos, formato 12.0 para 12 periodos
 /// 
+#[wasm_bindgen]
 pub fn calcula_valor_presente(valor_futuro: f64, i: f64, n: f64) -> f64 {
     let i: f64 = i / 100.0;
     let valor_presente:f64 = valor_futuro / ((1.0 + i).powf(n));
@@ -51,6 +57,7 @@ pub fn calcula_valor_presente(valor_futuro: f64, i: f64, n: f64) -> f64 {
 ///  * i - taxa/juros, formato 10.0 para 10% 
 ///  * n - numero de periodos, formato 12.0 para 12 periodos
 /// 
+#[wasm_bindgen]
 pub fn calcula_vlr_futuro_serie_pgmt(parcela: f64, i: f64, n: u64) -> f64 {
     let i = i / 100.0;
     let vlr_futuro_serie_parcelas: f64 = (parcela * ( 1.0 - (1.0 + i).powf(-(n as f64))) / i) * (1.0 + i).powf(n as f64);
@@ -63,6 +70,7 @@ pub fn calcula_vlr_futuro_serie_pgmt(parcela: f64, i: f64, n: u64) -> f64 {
 ///  * i - taxa/juros, formato 10.0 para 10% 
 ///  * n - numero de periodos, formato 12.0 para 12 periodos
 /// 
+#[wasm_bindgen]
 pub fn calcula_vlr_presente_serie_pgmt(parcela: f64, i: f64, n: u64) -> f64 {
     let i = i / 100.0;
     let vlr_presente_serie_parcelas: f64 = parcela * ( 1.0 - (1.0 + i).powf(-(n as f64))) / i;
@@ -74,6 +82,7 @@ pub fn calcula_vlr_presente_serie_pgmt(parcela: f64, i: f64, n: u64) -> f64 {
 ///  * tx_anterior - formato 10.0 para 10% ​
 ///  * tx_atual - formato 10.0 para 10% 
 /// 
+#[wasm_bindgen]
 pub fn acumula_taxa(tx_anterior: f64, tx_atual: f64) -> f64 {
     let tx_anterior = tx_anterior / 100.0;
     let tx_atual = tx_atual / 100.0;
@@ -87,6 +96,7 @@ pub fn acumula_taxa(tx_anterior: f64, tx_atual: f64) -> f64 {
 /// # Arguments
 ///  * vetor_taxa - deve ser informado em formato '`Vec<f64>`', sendo os elementos em formato ( 3% -> 3.00, 20,5% -> 20.50)
 /// 
+#[wasm_bindgen]
 pub fn acumula_taxa_vetorizado(vetor_taxa: Vec<f64>) -> Vec<f64> {
     
     let mut vetor_taxa_acumulado: Vec<f64> = Vec::new();
@@ -108,6 +118,7 @@ pub fn acumula_taxa_vetorizado(vetor_taxa: Vec<f64>) -> Vec<f64> {
 ///  * i - taxa/juros, formato 10.0 para 10% 
 ///  * n - numero de periodos, formato 12.0 para 12 periodos
 /// 
+#[wasm_bindgen]
 pub fn calcula_parcela_serie_pgmt_unif_usando_vlr_presente(vlr_presente_serie_parcelas: f64, i: f64, n: u64) -> f64 {
     if i == 0.0 {
         return vlr_presente_serie_parcelas / (n as f64)
@@ -124,6 +135,7 @@ pub fn calcula_parcela_serie_pgmt_unif_usando_vlr_presente(vlr_presente_serie_pa
 ///  * i - taxa/juros, formato 10.0 para 10% 
 ///  * n - numero de periodos, formato 12.0 para 12 periodos
 /// 
+#[wasm_bindgen]
 pub fn calcula_parcela_serie_pgmt_unif_usando_vlr_futuro(vlr_futuro_serie_parcelas: f64, i: f64, n: u64) -> f64 {
 
     
@@ -142,6 +154,7 @@ pub fn calcula_parcela_serie_pgmt_unif_usando_vlr_futuro(vlr_futuro_serie_parcel
 ///  * vlr_inicial - formato 100.00 para 100,00
 ///  * vlr_final - formato 100.00 para 100,00
 /// 
+#[wasm_bindgen]
 pub fn calcula_variacao(vlr_inicial: f64, vlr_final: f64) -> f64 {
     if vlr_inicial == vlr_final {
         return 0.0; 
@@ -163,7 +176,8 @@ pub fn calcula_variacao(vlr_inicial: f64, vlr_final: f64) -> f64 {
 /// # Atenção!!
 /// O numero de períodos utilizados é o mesmo que o número de fluxos inseridos no vetor, caso exista algum periodo sem movimentação, deverá ser inserido o valor 0.00 no lugar
 /// 
-pub fn calcula_vpl(fluxos_de_caixa: &Vec<f64>, i: f64) -> f64 {
+#[wasm_bindgen]
+pub fn calcula_vpl(fluxos_de_caixa: Vec<f64>, i: f64) -> f64 {
     let mut n: f64 = 1.00;
     let mut vpl: f64 = 0.00; 
 
@@ -175,7 +189,7 @@ pub fn calcula_vpl(fluxos_de_caixa: &Vec<f64>, i: f64) -> f64 {
     return vpl;
 }
 /// Apenas a derivada função de fluxo de caixa igualado a zero (VPL) 
-fn calcula_derivada_fluxo_de_caixa(fluxos_de_caixa: &Vec<f64>, i: f64) -> f64 {
+fn calcula_derivada_fluxo_de_caixa(fluxos_de_caixa: Vec<f64>, i: f64) -> f64 {
     let mut acumulador: f64 = 0.0;
     let i = i / 100.0;
     let mut n = 1.0;
@@ -201,7 +215,8 @@ fn calcula_derivada_fluxo_de_caixa(fluxos_de_caixa: &Vec<f64>, i: f64) -> f64 {
 /// # Arguments
 ///  * fluxos_de_caixa - Vec => (Fc1, Fc2, ..., Fcn) sendo Fcn no formato 1000.00 para R$1000,00
 /// 
-pub fn calcula_tir(fluxos_de_caixa: &Vec<f64>) -> f64 {
+#[wasm_bindgen]
+pub fn calcula_tir(fluxos_de_caixa: Vec<f64>) -> f64 {
     const MAX_ITERACOES: u64 = 100_000_000_000_000_000;
     const PRECISAO: f64 = 0.000_001;
 
@@ -209,8 +224,8 @@ pub fn calcula_tir(fluxos_de_caixa: &Vec<f64>) -> f64 {
         let mut iteracao: u64 = 0;
 
         while iteracao < MAX_ITERACOES {
-            let vpl: f64 = calcula_vpl(fluxos_de_caixa,taxa_chute);
-            let resultado_derivada_na_taxa_chute: f64 = calcula_derivada_fluxo_de_caixa(fluxos_de_caixa,taxa_chute);
+            let vpl: f64 = calcula_vpl(fluxos_de_caixa.clone(),taxa_chute);
+            let resultado_derivada_na_taxa_chute: f64 = calcula_derivada_fluxo_de_caixa(fluxos_de_caixa.clone(),taxa_chute);
 
             if resultado_derivada_na_taxa_chute.abs() < PRECISAO {
                 break;
@@ -320,36 +335,36 @@ mod test_financial_math_lib {
     #[test]
     fn test_calcula_vpl() {
         let fluxos_de_caixa_1: Vec<f64> = vec![100.0, -50.0, 25.0, -12.5];
-        assert_eq!(calcula_vpl(&fluxos_de_caixa_1, 0.0), 62.5);
+        assert_eq!(calcula_vpl(fluxos_de_caixa_1, 0.0), 62.5);
     
         let fluxos_de_caixa_2: Vec<f64> = vec![100.0, -50.0, 25.0, -12.5];
-        assert_eq!(calcula_vpl(&fluxos_de_caixa_2, 5.0), 61.19878034358113);
+        assert_eq!(calcula_vpl(fluxos_de_caixa_2, 5.0), 61.19878034358113);
     
         let fluxos_de_caixa_3: Vec<f64> = vec![100.0, -50.0, 25.0, -12.5];
-        assert_eq!(calcula_vpl(&fluxos_de_caixa_3, -0.1), 62.52497489978714);
+        assert_eq!(calcula_vpl(fluxos_de_caixa_3, -0.1), 62.52497489978714);
     
         let fluxos_de_caixa_4: Vec<f64> = vec![1000.0, -500.0, 250.0, -125.0];
-        assert_eq!(calcula_vpl(&fluxos_de_caixa_4, 0.02), 624.9499900079967);
+        assert_eq!(calcula_vpl(fluxos_de_caixa_4, 0.02), 624.9499900079967);
     
         let fluxos_de_caixa_5: Vec<f64> = vec![100.0, -50.0, 25.0, -12.5];
-        assert_eq!(calcula_vpl(&fluxos_de_caixa_5, 0.1), 62.474975099787876);
+        assert_eq!(calcula_vpl(fluxos_de_caixa_5, 0.1), 62.474975099787876);
     }
 
     #[test]
     fn test_calcula_tir() {
         let fluxos_de_caixa1: Vec<f64> = vec![-100.0, 200.0, 300.0];
-        assert_eq!(calcula_tir(&fluxos_de_caixa1), 199.99999360471355);
+        assert_eq!(calcula_tir(fluxos_de_caixa1), 199.99999360471355);
     
         let fluxos_de_caixa2: Vec<f64> = vec![500.0, -200.0, -300.0, -400.0, -500.0];
-        assert_eq!(calcula_tir(&fluxos_de_caixa2), 47.96268208777367);
+        assert_eq!(calcula_tir(fluxos_de_caixa2), 47.96268208777367);
     
         let fluxos_de_caixa3: Vec<f64> = vec![-1000.0, 200.0, -300.0, 400.0, -500.0];
-        assert_eq!(calcula_tir(&fluxos_de_caixa3), 3191263.0864126612);
+        assert_eq!(calcula_tir(fluxos_de_caixa3), 3191263.0864126612);
     
         let fluxos_de_caixa4: Vec<f64> = vec![-100000.0, 20000.0, 30000.0, 40000.0, 50000.0];
-        assert_eq!(calcula_tir(&fluxos_de_caixa4), 12.82572689969918);
+        assert_eq!(calcula_tir(fluxos_de_caixa4), 12.82572689969918);
     
         let fluxos_de_caixa5: Vec<f64> = vec![-0.1, 0.02, 0.03, 0.04, 0.05];
-        assert_eq!(calcula_tir(&fluxos_de_caixa5), 12.825258633856423);
+        assert_eq!(calcula_tir(fluxos_de_caixa5), 12.825258633856423);
     }
 }
